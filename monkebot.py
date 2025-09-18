@@ -222,21 +222,13 @@ async def upload_monkefiles(ctx):
     await ctx.send("Done!")
 
 
-@bot.slash_command(name="newspaper",description="generate a newspaper",guild_ids=[monke_server])
-async def newspaper(ctx, headline,body,  user: nextcord.Member = None):  
-    await ctx.user.send(content="Working on your `newspaper` image...")
-    if user:
-        pfp = await user.avatar.read()
-    else:
-        pfp = None
-    (filename, temp_files) = await MonkeImages.newspaper(headline,body,pfp)
-    await ctx.send(content=None,file=nextcord.File(filename,filename="newspaper.png"))
+@bot.slash_command(name="newspaper", description="generate a newspaper", guild_ids=[monke_server])
+async def newspaper(ctx, headline, body, user: nextcord.Member = None):
+    await ctx.response.defer()
+    pfp = await user.avatar.read() if user else None
+    filename, temp_files = await MonkeImages.newspaper(headline, body, pfp)
+    await ctx.followup.send(file=nextcord.File(filename, filename="newspaper.png"))
     MonkeImages.cleanup(temp_files)
-
-
-
-
-
 
 
 @bot.slash_command(name="where",description="where banana",guild_ids=[monke_server])
